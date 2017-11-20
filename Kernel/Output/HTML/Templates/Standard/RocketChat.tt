@@ -1,0 +1,38 @@
+<!-- Start of Rocket.Chat Livechat Script -->
+<script type="text/javascript">
+var RocketChatPreFormClean = 0;
+
+(function(w, d, s, u) {
+	w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;
+	var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
+	j.async = true; j.src = 'http://192.168.1.41/packages/rocketchat_livechat/assets/rocketchat-livechat.min.js?_=201702160944';
+	h.parentNode.insertBefore(j, h);
+})(window, document, 'script', 'http://192.168.1.41/livechat');
+
+
+RocketChat(function() {
+    this.onChatMaximized(function() {
+        // do whatever you want
+        if (!RocketChatPreFormClean){
+            // Get Rocketchat pre form element
+            var guestName = $('#rocketchat-iframe').contents().find('#guestName');
+            var guestEmail = $('#rocketchat-iframe').contents().find('#guestEmail');
+            var department = $('#rocketchat-iframe').contents().find('select[name=department]');
+            
+            // Set Customer Name and Email
+            guestName.val('[% Data.UserFirstname %]');
+            guestEmail.val('[% Data.UserEmail %]');
+            
+            // CSS
+            guestName.css('color','#777').css('background-color','#eee').prop('readonly','true');
+            guestEmail.css('color','#777').css('background-color','#eee').prop('readonly','true');
+            $('#rocketchat-iframe').contents().find('select[name=department] option:contains("Select a department")').get(0).remove();
+            
+            // Mark as cleaned so we don't perform it again
+            RocketChatPreFormClean=1;
+        }
+    });
+    this.setCustomField('username', '[% Data.UserLogin %]');
+});
+
+</script>

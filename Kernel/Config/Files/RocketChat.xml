@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<otrs_config version="1.0" init="Application">
+    <ConfigItem Name="Frontend::Output::FilterElementPost###RocketChat" Required="0" Valid="1">
+        <Description Translatable="1">Rocket Chat Livechat Output Filter</Description>
+        <Group>RocketChat</Group>
+        <SubGroup>Frontend::Output::FilterElementPost</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::FilterElementPost::RocketChat</Item>
+                <Item Key="Debug">0</Item>
+                <Item Key="Templates">
+                    <Hash>
+                        <Item Key="CustomerFooter">1</Item>
+                    </Hash>
+                </Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="GenericInterface::Operation::Module###RocketChat::IncomingChat" Required="0" Valid="1">
+        <Description Translatable="1">GenericInterface module registration for the operation layer.</Description>
+        <Group>RocketChat</Group>
+        <SubGroup>GenericInterface::Operation::ModuleRegistration</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Name">IncomingChat</Item>
+                <Item Key="Controller">RocketChat</Item>
+                <Item Key="ConfigDialog">AdminGenericInterfaceOperationDefault</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+
+</otrs_config>
