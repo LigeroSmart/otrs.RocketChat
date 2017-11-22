@@ -1,14 +1,9 @@
 <!-- Start of Rocket.Chat Livechat Script -->
+
+[% Data.RocketChatJavascript %]
+
 <script type="text/javascript">
 var RocketChatPreFormClean = 0;
-
-(function(w, d, s, u) {
-	w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;
-	var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
-	j.async = true; j.src = 'http://192.168.1.41/packages/rocketchat_livechat/assets/rocketchat-livechat.min.js?_=201702160944';
-	h.parentNode.insertBefore(j, h);
-})(window, document, 'script', 'http://192.168.1.41/livechat');
-
 
 RocketChat(function() {
     this.onChatMaximized(function() {
@@ -33,6 +28,10 @@ RocketChat(function() {
         }
     });
     this.setCustomField('username', '[% Data.UserLogin %]');
+    //Diferença    
+    var d = new Date();
+    var n = d.getTimezoneOffset();
+    this.setCustomField('timezone', n);
 });
 
 </script>

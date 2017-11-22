@@ -31,10 +31,11 @@ sub Run {
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     my %Data = (
-        UserLogin     => $Self->{UserLogin},
-        UserFirstname => $Self->{UserFirstname},
-        UserLastname  => $Self->{UserLastname},
-        UserEmail     => $Self->{UserEmail},
+        UserLogin            => $Self->{UserLogin},
+        UserFirstname        => $Self->{UserFirstname},
+        UserLastname         => $Self->{UserLastname},
+        UserEmail            => $Self->{UserEmail},
+        RocketChatJavascript => $Kernel::OM->Get('Kernel::Config')->Get('RocketChat::Code')
     );
 
     my $Content = $LayoutObject->Output(

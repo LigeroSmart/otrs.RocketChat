@@ -1,14 +1,13 @@
-# This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
-# --
-
 package Kernel::GenericInterface::Operation::RocketChat::IncomingChat;
 
 use strict;
 use warnings;
 
 use Data::Dumper;
+
+use Digest::MD5 qw(md5_hex);
+
+use Date::Parse;
 
 use Kernel::System::VariableCheck qw(:all);
 use utf8;
@@ -28,7 +27,7 @@ Kernel::GenericInterface::Operation::RocketChat::IncomingChat - GenericInterface
 
 =over 4
 
-=cut
+    =cut
 
 =item new()
 
@@ -70,7 +69,9 @@ Returns nothing
 sub Run {
     my ( $Self, %Param ) = @_;
 
-
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    
     #Check auth Params 
     # check needed stuff
     if (
@@ -108,111 +109,212 @@ sub Run {
         );
     }
     
-    
-    $Kernel::OM->Get('Kernel::System::Log')->Log( Priority => 'error', Message => "aaaaaaaaaaaa ".Dumper(%Param));
-    
+    my %Data;
     # Pega dados do Atendente
+    $Data{UserLogin} = $Param{Data}->{agent}->{username} || '';
     
     # Pega dados do Cliente
+    $Data{CustomerUserLogin} = $Param{Data}->{visitor}->{customFields}->{username} || '';
+    $Data{CustomerUserName}  = $Param{Data}->{visitor}->{name} || '';
+    $Data{CustomerUserEmail}  = $Param{Data}->{visitor}->{email} || '';
     
     # Pega o departamento
+    $Data{Queue}  = $Param{Data}->{visitor}->{department} || '';
     
     # Pega tickets que devem ser atualizados
-    
-    # Se não houver, cria um ticket na fila relativa ao departamento
-    
-    # Prepara html a ser criado com base nos messages
-    
-    # Para cada ticket envolvido, cria um artigo com o conteúdo do chat
-    
-    
-
-    #my $HasAccess = 0;
- 
-    ##Get All Permission Groups that Has Access to API
-    #my @ConfigPermissionGroups = @{$Kernel::OM->Get('Kernel::Config')->Get('GenericInterface::Operation::Groups')};
-    ##---------------------------------------------------------------------------------------------------------#
-
-    ##objecto do grupo
-    #my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
-    
-    ##Pega a lista de todos os grupos do Usuário
-    #my %GroupList = $GroupObject->PermissionUserGroupGet(
-        #UserID => $UserID,
-        #Type   => 'move_into',  # ro|move_into|priority|create|rw
-    #);
-   
-    ##Verifica se o usuário esta em um grupo que permite o acesso as informações dessa API
-	#my $teste = "";
-	#my $a = "";
-   	#foreach my $keys (keys %GroupList){
-	#if ($a =  grep { $_ eq $GroupList{$keys} } @ConfigPermissionGroups ){
-		#$HasAccess = 1;
-	#}
-    #}
-    #if( $HasAccess == 0) {
-	#return {
-                #Success      => 0,
-                #ErrorMessage => "You don't have permission to $teste access data"
-            #};
-
-    #}
-    # get languages list
-    # set UserID to root because in public interface there is no user
-    # check needed objects
-    for my $Needed (qw( Object Method )) {
-        if ( !$Param{Data}->{$Needed} ) {
-            return {
-                Success      => 0,
-                ErrorMessage => "You should inform $Needed parameter!"
-            };
+    my @Tags = ();
+    if($Param{Data}->{tags}){
+        # Quando há apenas uma tag, ela vem como string e não como array, então temos que converter
+        if(IsString($Param{Data}->{tags})){
+            push @Tags,$Param{Data}->{tags};
+        } else {
+            (@Tags) = @{$Param{Data}->{tags}};            
         }
     }
-    
-    # check data - only accept undef or hash ref
-    if ( defined $Param{Data} && ref $Param{Data} ne 'HASH' ) {
 
-        return $Self->{DebuggerObject}->Error(
-            Summary => 'Got Data but it is not a hash ref in Operation Test backend)!'
+    my @Tickets;
+
+    # Para cada tag, verifica se possui o padrão #999999. Se sim, procura por um ticketid
+    TAG:
+    for my $Tag (@Tags){
+        next TAG if $Tag !~ m/^#/;
+        my $TicketID;
+        $Tag =~ s/(#)//;
+        $TicketID = $TicketObject->TicketIDLookup(
+            TicketNumber => $Tag,
+            UserID       => 1,
+        );
+        push @Tickets, $TicketID if $TicketID;
+    }
+        
+    # Get Topic
+    my $Topic = $Param{Data}->{topic} || 
+        $LayoutObject->{LanguageObject}->Translate('Chat Ticket');
+
+
+    # Se não houver, cria um ticket na fila relativa ao departamento
+    if (!scalar @Tickets){
+
+        # Get default customer ID
+        my $CustomerUser = $Param{Data}->{visitor}->{customFields}->{username} || 'rocketchat';
+        
+        my @CustomerIDs = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerIDs(
+           User => $CustomerUser,
+        );
+        
+        my $CustomerCompany = $CustomerIDs[0] || $CustomerUser;
+
+        # Get Agent ID
+        
+        my $TicketID = $TicketObject->TicketCreate(
+           Title        => $Topic,
+           CustomerUser => $CustomerUser,
+           CustomerID   => $CustomerCompany,
+           %{$Param{Data}->{NewTicket}}
+       );
+       
+       push @Tickets, $TicketID;
+   }
+    # Prepara html a ser criado com base nos "messages"
+    my @Messages = ();
+    if($Param{Data}->{messages}){
+        (@Messages) = @{$Param{Data}->{messages}};
+    }
+    
+    
+    my $LastDate;
+    my $LastAuthor;
+
+    my $AgentGravatar = md5_hex($Param{Data}->{agent}->{email}) ||'00000000000000000000000000000000';
+    my $CustomerGravatar = md5_hex($Param{Data}->{visitor}->{email}) ||'00000000000000000000000000000000';
+    
+    my $AgentName = $Param{Data}->{agent}->{name} || $Param{Data}->{agent}->{username} || $LayoutObject->{LanguageObject}->Translate('Agent');
+    my $CustomerName = $Param{Data}->{visitor}->{name} || $Param{Data}->{visitor}->{username} || $LayoutObject->{LanguageObject}->Translate('Customer');
+    
+    for my $message (@Messages){
+        ### New Row
+        #$Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
+            #Name => 'Row',
+            #Data => {
+            #},
+        #);
+
+        #### Print Data
+        my $time = str2time($message->{ts});
+        my $tz = $Param{Data}->{visitor}->{customFields}->{timezone} || 0;
+        #$tz = $tz * -1;
+        $time += ($tz*60);
+        my $dtLong = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
+            SystemTime => $time,
+            Type       => 'Long',
+        );
+        my $dtShort = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
+            SystemTime => $time,
+            Type       => 'Short',
+        );
+        my $Date = $LayoutObject->{LanguageObject}->FormatTimeString( $dtLong, 'DateFormatShort' );
+        #if($Date ne $LastDate){
+            #$Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
+                #Name => 'Date',
+                #Data => {
+                    #Content => $dtLong
+                #},
+            #);
+            #$LastDate = $Date;
+        #}
+
+        ### Left Widget (Avatar maybe)
+        # Verifies if need to print author
+        if($message->{username} ne $LastAuthor){
+            $LastAuthor = $message->{username};
+            my $Avatar;
+            my $Name;
+            if ($message->{username} =~ m/^guest/){
+                $Name   = $CustomerName;
+                $Avatar = $CustomerGravatar;
+            } else {
+                $Name   = $AgentName;
+                $Avatar = $AgentGravatar;            
+            }
+            ### Print Author
+            $Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
+                Name => 'Author',
+                Data => {
+                    Left   => "<img src=\"https://www.gravatar.com/avatar/$Avatar?s=36\" class=\"RocketChatAvatar\"/>",
+                    Author => $Name,
+                    Time   => $dtShort,
+                },
+            );
+        }
+        
+        ### Print Message
+        $Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
+            Name => 'Message',
+            Data => {
+                Content => $Kernel::OM->Get('Kernel::System::HTMLUtils')->ToHTML(
+                    String => $message->{msg},
+                )
+            },
+        );
+
+    }
+    
+        # Para cada mensagem
+        # Converte data utc para local
+    
+    
+    my $ChatHTML = $LayoutObject->Output(
+        TemplateFile => 'RocketChat/ChatTemplate'
+    );
+    
+    $Kernel::OM->Get('Kernel::System::Log')->Log( Priority => 'error', Message => "aaaaaaaaaaaa ".Dumper($ChatHTML));
+    # Para cada ticket envolvido, cria um artigo com o conteúdo do chat
+    for my $TicketID(@Tickets){
+        # create article
+        my $ArticleID = $TicketObject->ArticleCreate(
+            #NoAgentNotify  => $Article->{NoAgentNotify}  || 0,
+            TicketID       => $TicketID,
+            ArticleType    => 'webrequest',
+            SenderType     => 'customer',
+            From           => $Param{Data}->{visitor}->{name} || 'Chat Guest',
+            To             => $Param{Data}->{agent}->{name} || 'Agent',
+            Subject        => $Topic,
+            Body           => $ChatHTML,
+            MimeType       => 'text/html',
+            Charset        => 'utf-8',
+            #ContentType    => $Article->{ContentType}    || '',
+            UserID         => '1',
+            HistoryType    => 'AddNote',
+            HistoryComment => '%%ChatAdded%%',
+            #AutoResponseType => $Article->{AutoResponseType},
+            #UnlockOnAway     => $UnlockOnAway,
+            #OrigHeader       => {
+                #From    => $From,
+                #To      => $To,
+                #Subject => $Article->{Subject},
+                #Body    => $Article->{Body},
+
+            #},
         );
     }
-
-    #my $Object=$Param{Data}->{Object};
-    #my $Method=$Param{Data}->{Method};
     
-    #my %Data;
-
-    #if($Param{Data}->{ReturnType} eq 'ARRAY'){
-        ## RETURN IS ARRAY
-        #$Data{Result}=[ $Kernel::OM->Get("Kernel::System::$Object")->$Method(
-                           #%{$Param{Data}->{Params}}
-                         #) ];
-    #} elsif($Param{Data}->{ReturnType} eq 'HASH') {
-        ## RETURN IS HASH
-        #$Data{Result}={ $Kernel::OM->Get("Kernel::System::$Object")->$Method(
-                           #%{$Param{Data}->{Params}}
-                         #) };
-    #} else {
-        ## RETURN IS SCALAR (ID, NUMBER, TEXT);
-        #$Data{Result}= $Kernel::OM->Get("Kernel::System::$Object")->$Method(
-                           #%{$Param{Data}->{Params}}
-                         #);
-    #}
+    
+    
                      
     my $LogError = $Kernel::OM->Get('Kernel::System::Log')->GetLogEntry(
         Type => 'error', # error|info|notice
         What => 'Message', # Message|Traceback
     );
     
-    #if($LogError){
-        #$Data{Error}=$LogError;
-    #}
+    if($LogError){
+        $Data{Error}=$LogError;
+    }
 
     # return result
     return {
         Success => 1,
         Data    => {
-            #%Data
+            Success => 1
         },
     };
 }
