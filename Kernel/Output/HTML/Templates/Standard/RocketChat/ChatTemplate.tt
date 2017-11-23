@@ -1,0 +1,67 @@
+<style>
+* {
+    font-family: Roboto, Arial, Verdana, Sans Serif, SansSerif, Sans-Serif;
+    color: #333;
+    font-size: 10pt;
+}
+.RocketChatDate {
+    font-size: 10pt;
+    text-align:center;
+    background-color: white;
+    position: relative;
+    top: -16px;
+    width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.RocketChatLeft {
+    float: left;
+    padding: 5px;
+    width: 45px;
+}
+.RocketChatAuthor{
+    padding-top: 6px;
+    margin-bottom: 4px;
+    display: block;
+    color: #333;
+}
+.RocketChatTime{
+    color: #888;
+    font-style: italic;
+    font-size: 9pt;
+}
+.RocketChatRight{
+    min-height:50px;
+    margin-left:56px;
+    margin-bottom: 15px;
+    display:block;
+}
+.RocketChatMessage{
+    display: block;
+}
+</style>
+<div class="RocketChatChat">
+# [% RenderBlockStart("Row") %]
+#[% RenderBlockStart("Date") %]
+#    <hr/>
+#    <div class="RocketChatDate">[% Data.Content | Localize("Date") %]</div>
+#[% RenderBlockEnd("Date") %]
+
+[% RenderBlockStart("Author") %]
+    <div class="RocketChatLeft">
+            [% Data.Left %]
+    </div>
+    <div class="RocketChatRight">
+        <span class="RocketChatAuthor">
+            <b>[% Data.Author | html %]</b> 
+            <span class="RocketChatTime">[% Data.Time | Localize("TimeShort") %]</span>
+        </span>
+[% RenderBlockStart("Message") %]
+        <span class="RocketChatMessage">
+            [% Data.Content %]
+        </span>
+[% RenderBlockEnd("Message") %]
+    </div>
+[% RenderBlockEnd("Author") %]
+# [% RenderBlockEnd("Row") %]
+</div>

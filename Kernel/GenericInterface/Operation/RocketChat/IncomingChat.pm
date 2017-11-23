@@ -27,7 +27,7 @@ Kernel::GenericInterface::Operation::RocketChat::IncomingChat - GenericInterface
 
 =over 4
 
-    =cut
+=cut
 
 =item new()
 
@@ -258,19 +258,13 @@ sub Run {
         );
 
     }
-    
-        # Para cada mensagem
-        # Converte data utc para local
-    
-    
+   
     my $ChatHTML = $LayoutObject->Output(
         TemplateFile => 'RocketChat/ChatTemplate'
     );
     
     $Kernel::OM->Get('Kernel::System::Log')->Log( Priority => 'error', Message => "aaaaaaaaaaaa ".Dumper($ChatHTML));
-    # Para cada ticket envolvido, cria um artigo com o conteúdo do chat
     for my $TicketID(@Tickets){
-        # create article
         my $ArticleID = $TicketObject->ArticleCreate(
             #NoAgentNotify  => $Article->{NoAgentNotify}  || 0,
             TicketID       => $TicketID,
@@ -298,9 +292,6 @@ sub Run {
         );
     }
     
-    
-    
-                     
     my $LogError = $Kernel::OM->Get('Kernel::System::Log')->GetLogEntry(
         Type => 'error', # error|info|notice
         What => 'Message', # Message|Traceback
@@ -323,13 +314,3 @@ sub Run {
 1;
 
 =back
-
-=head1 TERMS AND CONDITIONS
-
-This software is part of the OTRS project (L<http://otrs.org/>).
-
-This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
