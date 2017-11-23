@@ -14,7 +14,13 @@
     caso você coloque o número do chamado nas TAGs do Chat.</Description>
     <Framework>5.0.x</Framework>
     <Filelist>
-        <File Location="" Permission="644"></File>
+        <File Location="Custom/RocketChat.sopm" Permission="644"></File>
+        <File Location="Kernel/Config/Files/RocketChat.xml" Permission="644"></File>
+        <File Location="Kernel/GenericInterface/Operation/RocketChat/IncomingChat.pm" Permission="644"></File>
+        <File Location="Kernel/Output/HTML/FilterElementPost/RocketChat.pm" Permission="644"></File>
+        <File Location="Kernel/Output/HTML/Templates/Standard/RocketChat.tt" Permission="644"></File>
+        <File Location="Kernel/Output/HTML/Templates/Standard/RocketChat/ChatTemplate.tt" Permission="644"></File>
+        <File Location="var/packagesetup/RocketChat.pm" Permission="644"></File>
     </Filelist>
     <CodeInstall Type="post">
         my $CodeModule = 'var::packagesetup::' . $Param{Structure}-&gt;{Name}-&gt;{Content};

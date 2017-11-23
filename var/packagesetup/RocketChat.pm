@@ -6,6 +6,26 @@
 
 package var::packagesetup::RocketChat;
 
+=head1 ADDON
+
+RocketChat
+
+
+=head1 NAME
+
+var::packagesetup::RocketChat - AddOn Auto installer script
+
+
+=head1 SYNOPSIS
+
+Create a RocketChat default Web Service on OTRS
+
+=head1 PUBLIC INTERFACE
+
+=over 4
+
+=cut
+
 use strict;
 use warnings;
 
@@ -23,6 +43,11 @@ our @ObjectDependencies = (
     'Kernel::System::Valid',
 );
 
+=item new()
+
+Creates the Object
+
+=cut
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -33,7 +58,11 @@ sub new {
     return $Self;
 }
 
+=item new()
 
+Call all subroutines needed to the package installation
+
+=cut
 sub CodeInstall {
     my ( $Self, %Param ) = @_;
 
@@ -43,6 +72,11 @@ sub CodeInstall {
     return 1;
 }
 
+=item new()
+
+Call all subroutines needed to the package Upgrade
+
+=cut
 sub CodeUpgrade {
     my ( $Self, %Param ) = @_;
 
@@ -251,3 +285,5 @@ _END_
 
     return 1;   
 }
+=back
+1

@@ -17,11 +17,19 @@ use base qw(
 
 our $ObjectManagerDisabled = 1;
 
+=head1 ADDON
+
+RocketChat
+
+
 =head1 NAME
 
-Kernel::GenericInterface::Operation::RocketChat::IncomingChat - GenericInterface RocketChat Integration
+Kernel::GenericInterface::Operation::RocketChat::IncomingChat - GenericInterface RocketChat Integration.
+
 
 =head1 SYNOPSIS
+
+This is a web service operation for treating incoming messages of RocketChat on OTRS
 
 =head1 PUBLIC INTERFACE
 
@@ -60,9 +68,20 @@ sub new {
 
 =item Run()
 
-perform RocketChat chat store at new or already existent ticket
+Receive data from RocketChat webservice after livechat is closed and create a new ticket or
+a new article on an existent ticket if the ticket number is informed as TAG.
 
-Returns nothing
+Note that it's essential to have a well customized xslt mapping in order to correctly
+create a new ticket, according to your system queues, states and so on.
+
+Returns a hash like this:
+
+    {
+        Success => 1,
+        Data    => {
+            Success => 1
+        },
+    }
 
 =cut
 
@@ -72,8 +91,6 @@ sub Run {
     my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     
-    #Check auth Params 
-    # check needed stuff
     if (
         !$Param{Data}->{UserLogin}
         && !$Param{Data}->{CustomerUserLogin}
@@ -97,7 +114,6 @@ sub Run {
         }
     }
 	
-    # authenticate user
     my ( $UserID, $UserType ) = $Self->Auth(
         %Param,
     );
@@ -110,18 +126,13 @@ sub Run {
     }
     
     my %Data;
-    # Pega dados do Atendente
-    $Data{UserLogin} = $Param{Data}->{agent}->{username} || '';
-    
-    # Pega dados do Cliente
+    $Data{UserLogin}         = $Param{Data}->{agent}->{username} || '';
     $Data{CustomerUserLogin} = $Param{Data}->{visitor}->{customFields}->{username} || '';
     $Data{CustomerUserName}  = $Param{Data}->{visitor}->{name} || '';
-    $Data{CustomerUserEmail}  = $Param{Data}->{visitor}->{email} || '';
-    
-    # Pega o departamento
+    $Data{CustomerUserEmail} = $Param{Data}->{visitor}->{email} || '';
     $Data{Queue}  = $Param{Data}->{visitor}->{department} || '';
     
-    # Pega tickets que devem ser atualizados
+    # Verifica nas tags se houve algum número de chamado informado com "#"
     my @Tags = ();
     if($Param{Data}->{tags}){
         # Quando há apenas uma tag, ela vem como string e não como array, então temos que converter
@@ -146,33 +157,24 @@ sub Run {
         );
         push @Tickets, $TicketID if $TicketID;
     }
-        
-    # Get Topic
+
     my $Topic = $Param{Data}->{topic} || 
         $LayoutObject->{LanguageObject}->Translate('Chat Ticket');
 
 
     # Se não houver, cria um ticket na fila relativa ao departamento
     if (!scalar @Tickets){
-
-        # Get default customer ID
         my $CustomerUser = $Param{Data}->{visitor}->{customFields}->{username} || 'rocketchat';
-        
         my @CustomerIDs = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerIDs(
            User => $CustomerUser,
         );
-        
         my $CustomerCompany = $CustomerIDs[0] || $CustomerUser;
-
-        # Get Agent ID
-        
         my $TicketID = $TicketObject->TicketCreate(
            Title        => $Topic,
            CustomerUser => $CustomerUser,
            CustomerID   => $CustomerCompany,
            %{$Param{Data}->{NewTicket}}
        );
-       
        push @Tickets, $TicketID;
    }
     # Prepara html a ser criado com base nos "messages"
@@ -180,7 +182,6 @@ sub Run {
     if($Param{Data}->{messages}){
         (@Messages) = @{$Param{Data}->{messages}};
     }
-    
     
     my $LastDate;
     my $LastAuthor;
@@ -192,17 +193,11 @@ sub Run {
     my $CustomerName = $Param{Data}->{visitor}->{name} || $Param{Data}->{visitor}->{username} || $LayoutObject->{LanguageObject}->Translate('Customer');
     
     for my $message (@Messages){
-        ### New Row
-        #$Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
-            #Name => 'Row',
-            #Data => {
-            #},
-        #);
-
-        #### Print Data
+        # Obs: the time of the message is always send in UTF
         my $time = str2time($message->{ts});
-        my $tz = $Param{Data}->{visitor}->{customFields}->{timezone} || 0;
-        #$tz = $tz * -1;
+        # the following field is set by javascript as a customfield on RocketChat. We need that to calculate
+        # customer time of the message
+        my $tz = $Param{Data}->{visitor}->{customFields}->{timezone} || 0; 
         $time += ($tz*60);
         my $dtLong = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
             SystemTime => $time,
@@ -213,15 +208,6 @@ sub Run {
             Type       => 'Short',
         );
         my $Date = $LayoutObject->{LanguageObject}->FormatTimeString( $dtLong, 'DateFormatShort' );
-        #if($Date ne $LastDate){
-            #$Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
-                #Name => 'Date',
-                #Data => {
-                    #Content => $dtLong
-                #},
-            #);
-            #$LastDate = $Date;
-        #}
 
         ### Left Widget (Avatar maybe)
         # Verifies if need to print author
@@ -247,7 +233,6 @@ sub Run {
             );
         }
         
-        ### Print Message
         $Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
             Name => 'Message',
             Data => {
@@ -263,7 +248,6 @@ sub Run {
         TemplateFile => 'RocketChat/ChatTemplate'
     );
     
-    $Kernel::OM->Get('Kernel::System::Log')->Log( Priority => 'error', Message => "aaaaaaaaaaaa ".Dumper($ChatHTML));
     for my $TicketID(@Tickets){
         my $ArticleID = $TicketObject->ArticleCreate(
             #NoAgentNotify  => $Article->{NoAgentNotify}  || 0,
@@ -276,19 +260,9 @@ sub Run {
             Body           => $ChatHTML,
             MimeType       => 'text/html',
             Charset        => 'utf-8',
-            #ContentType    => $Article->{ContentType}    || '',
             UserID         => '1',
             HistoryType    => 'AddNote',
             HistoryComment => '%%ChatAdded%%',
-            #AutoResponseType => $Article->{AutoResponseType},
-            #UnlockOnAway     => $UnlockOnAway,
-            #OrigHeader       => {
-                #From    => $From,
-                #To      => $To,
-                #Subject => $Article->{Subject},
-                #Body    => $Article->{Body},
-
-            #},
         );
     }
     
