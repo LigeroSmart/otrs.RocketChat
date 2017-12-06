@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.1">
     <Name>RocketChat</Name>
-    <Version>5.0.0</Version>
+    <Version>6.0.0</Version>
     <Vendor>Ligero [Free]</Vendor>
     <URL>http://www.complemento.net.br/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
@@ -12,10 +12,10 @@
     <Description Lang="pt_BR">Este AddOn realiza a integração do OTRS com o Rocket.Chat. Você pode ter um livechat no seu sistema OTRS ou em qualquer
     site de sua empresa. Quando o chat é encerrado, o RocketChat irá criar um novo chamado em seu sistema ou adicionará um artigo em um chamado existente
     caso você coloque o número do chamado nas TAGs do Chat.</Description>
-    <Framework>5.0.x</Framework>
+    <Framework>6.0.x</Framework>
     <Filelist>
         <File Location="Custom/RocketChat.sopm" Permission="644"></File>
-        <File Location="Kernel/Config/Files/RocketChat.xml" Permission="644"></File>
+        <File Location="Kernel/Config/Files/XML/RocketChat.xml" Permission="644"></File>
         <File Location="Kernel/GenericInterface/Operation/RocketChat/IncomingChat.pm" Permission="644"></File>
         <File Location="Kernel/Output/HTML/FilterElementPost/RocketChat.pm" Permission="644"></File>
         <File Location="Kernel/Output/HTML/Templates/Standard/RocketChat.tt" Permission="644"></File>
