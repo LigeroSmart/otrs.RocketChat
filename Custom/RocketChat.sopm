@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.1">
     <Name>RocketChat</Name>
-    <Version>5.0.0</Version>
+    <Version>5.0.1</Version>
     <Vendor>Ligero [Free]</Vendor>
     <URL>http://www.complemento.net.br/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
@@ -21,6 +21,8 @@
         <File Location="Kernel/Output/HTML/Templates/Standard/RocketChat.tt" Permission="644"></File>
         <File Location="Kernel/Output/HTML/Templates/Standard/RocketChat/ChatTemplate.tt" Permission="644"></File>
         <File Location="var/packagesetup/RocketChat.pm" Permission="644"></File>
+        <File Location="Kernel/System/Ticket/Event/NotificationEvent/Transport/RocketChat.pm" Permission="644"></File>
+        <File Location="Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportRocketChat.tt" Permission="644"></File>
     </Filelist>
     <CodeInstall Type="post">
         my $CodeModule = 'var::packagesetup::' . $Param{Structure}-&gt;{Name}-&gt;{Content};
