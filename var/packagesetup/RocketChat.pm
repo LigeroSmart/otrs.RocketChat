@@ -230,47 +230,54 @@ Debugger:
   DebugThreshold: debug
   TestMode: '0'
 Description: ''
-FrameworkVersion: 5.0.16
+FrameworkVersion: 5.0.x git
 Provider:
   Operation:
     Chat:
       Description: ''
       MappingInbound:
         Config:
-          Template: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<xsl:stylesheet
-            version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\r\n
-            \ <!--\r\n       Departmente field mapping to queue for new ticket creation\r\n
-            \ -->\r\n  <xsl:variable name=\"depto\">\r\n    <xsl:value-of select=\"//visitor/department\"
-            />\r\n  </xsl:variable>\r\n  <xsl:variable name=\"deptotrans\">\r\n    <xsl:choose>\r\n
-            \     <xsl:when test=\"\$depto=''\">Raw</xsl:when>\r\n      <xsl:when test=\"\$depto='E7S7a5ysKaxKeEZ7Y'\">Raw</xsl:when>\r\n
-            \     <xsl:otherwise>Raw</xsl:otherwise>\r\n    </xsl:choose>\r\n  </xsl:variable>\r\n<!--\r\n
-            \ Copy all the elements\r\n-->\r\n  <xsl:template match=\"node() | @*\">\r\n
-            \   <xsl:copy>\r\n      <xsl:apply-templates select=\"node() | @*\" />\r\n
-            \   </xsl:copy>\r\n  </xsl:template>\r\n<!--\r\n  Add \"Queue\",\"Priority\",\"State\"...
-            nodes for new ticket creation\r\n  You can/have to make your adjustment
-            here\r\n-->\r\n  <xsl:template match=\"RootElement\">\r\n       <xsl:copy>\r\n
-            \          <NewTicket>\r\n               <Queue>\r\n                   <xsl:value-of
-            select=\"\$deptotrans\" />\r\n               </Queue>\r\n               <State>new</State>\r\n
-            \              <Lock>unlock</Lock>\r\n               <Priority>3 normal</Priority>\r\n
-            \              <OwnerID>1</OwnerID>\r\n               <UserID>1</UserID>\r\n
-            \          </NewTicket>\r\n           <xsl:apply-templates select=\"@*|node()\"/>\r\n
-            \      </xsl:copy>\r\n  </xsl:template>\r\n  <xsl:template match=\"content\"
-            />\r\n</xsl:stylesheet>"
+          Template: "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>\\r\\n<xsl:stylesheet
+            version=\\"1.0\\" xmlns:xsl=\\"http://www.w3.org/1999/XSL/Transform\\">\\r\\n
+            \\ <!--\\r\\n       Departmente field mapping to queue for new ticket creation\\r\\n
+            \\ -->\\r\\n  <xsl:variable name=\\"depto\\">\\r\\n    <xsl:value-of select=\\"//visitor/department\\"
+            />\\r\\n  </xsl:variable>\\r\\n  <xsl:variable name=\\"deptotrans\\">\\r\\n    <xsl:choose>\\r\\n
+            \\     <xsl:when test=\\"\$depto=''\\">Service Desk</xsl:when>\\r\\n      <xsl:when
+            test=\\"\$depto='4FSjR5HdGzzyckKtE'\\">Service Desk</xsl:when>\\r\\n      <xsl:when
+            test=\\"\$depto='E7S7a5ysKaxKeEZ7Y'\\">Compras</xsl:when>\\r\\n      <xsl:when
+            test=\\"\$depto='E7S7a5ysKaxKeEZ7Y'\\">Compras</xsl:when>\\r\\n      <xsl:otherwise>Service
+            Desk</xsl:otherwise>\\r\\n    </xsl:choose>\\r\\n  </xsl:variable>\\r\\n<!--\\r\\n
+            \\ Copy all the elements\\r\\n-->\\r\\n  <xsl:template match=\\"node() | @*\\">\\r\\n
+            \\   <xsl:copy>\\r\\n      <xsl:apply-templates select=\\"node() | @*\\" />\\r\\n
+            \\   </xsl:copy>\\r\\n  </xsl:template>\\r\\n<!--\\r\\n  Add \\"Queue\\",\\"Priority\\",\\"State\\"...
+            nodes for new ticket creation\\r\\n  You can/have to make your adjustment
+            here\\r\\n-->\\r\\n  <xsl:template match=\\"RootElement\\">\\r\\n       <xsl:copy>\\r\\n
+            \\          <NewTicket>\\r\\n               <Queue>\\r\\n                   <xsl:value-of
+            select=\\"\$deptotrans\\" />\\r\\n               </Queue>\\r\\n               <State>new</State>\\r\\n
+            \\              <Lock>unlock</Lock>\\r\\n               <Priority>3 normal</Priority>\\r\\n
+            \\              <OwnerID>1</OwnerID>\\r\\n               <UserID>1</UserID>\\r\\n
+            \\          </NewTicket>\\r\\n           <xsl:apply-templates select=\\"@*|node()\\"/>\\r\\n
+            \\      </xsl:copy>\\r\\n  </xsl:template>\\r\\n  <xsl:template match=\\"content\\"
+            />\\r\\n</xsl:stylesheet>"
         Type: XSLT
       MappingOutbound: {}
       Type: RocketChat::IncomingChat
   Transport:
     Config:
       KeepAlive: ''
-      MaxLength: '9999999999'
+      MaxLength: '999999999'
       RouteOperationMapping:
         Chat:
+          RequestMethod:
+          - GET
+          - POST
           Route: /
     Type: HTTP::REST
 RemoteSystem: ''
 Requester:
   Transport:
     Type: ''
+
 _END_
 
     my $Config = $Kernel::OM->Get('Kernel::System::YAML')->Load( Data => $YAML );
