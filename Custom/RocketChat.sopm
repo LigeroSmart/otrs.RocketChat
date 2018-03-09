@@ -21,6 +21,8 @@
         <File Location="Kernel/Output/HTML/Templates/Standard/RocketChat.tt" Permission="644"></File>
         <File Location="Kernel/Output/HTML/Templates/Standard/RocketChat/ChatTemplate.tt" Permission="644"></File>
         <File Location="var/packagesetup/RocketChat.pm" Permission="644"></File>
+        <File Location="Kernel/System/Ticket/Event/NotificationEvent/Transport/RocketChat.pm" Permission="644"></File>
+        <File Location="Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportRocketChat.tt" Permission="644"></File>
     </Filelist>
     <CodeInstall Type="post">
         my $CodeModule = 'var::packagesetup::' . $Param{Structure}-&gt;{Name}-&gt;{Content};
