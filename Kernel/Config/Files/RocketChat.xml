@@ -59,7 +59,7 @@
                 <Item Key="Icon">fa fa-rocket</Item>
                 <Item Key="Prio">103</Item>
                 <Item Key="IsOTRSBusinessTransport">0</Item>
-                <Item Key="AgentEnabledByDefault">0</Item>
+                <Item Key="AgentEnabledByDefault">1</Item>
             </Hash>
         </Setting>
     </ConfigItem>

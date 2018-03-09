@@ -244,7 +244,7 @@ sub SendMessageRocketChat {
 	my $ua   = LWP::UserAgent->new;
 
 	my %Data;
-	$Data{text} = $Param{Subject} ."\n".$Param{Body};
+	$Data{text} = $Param{Subject} ."\n\n".$Param{Body};
 	
 	my $jsonData = $Kernel::OM->Get('Kernel::System::JSON')->Encode(
         Data => \%Data,
