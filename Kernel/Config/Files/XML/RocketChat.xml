@@ -44,5 +44,18 @@
             </Item>
         </Value>
     </Setting>
-
+    <Setting Name="Notification::Transport###RocketChat" Required="0" Valid="1">
+        <Description Translatable="1">Defines all the parameters for this notification transport.</Description>
+        <Navigation>Frontend::Admin::View::NotificationEvent</Navigation>
+        <Value>
+            <Hash>
+                <Item Key="Module">Kernel::System::Ticket::Event::NotificationEvent::Transport::RocketChat</Item>
+                <Item Key="Name" Translatable="1">Rocket.Chat</Item>
+                <Item Key="Icon">fa fa-rocket</Item>
+                <Item Key="Prio">103</Item>
+                <Item Key="IsOTRSBusinessTransport">0</Item>
+                <Item Key="AgentEnabledByDefault">0</Item>
+            </Hash>
+        </Value>
+    </Setting>
 </otrs_config>
