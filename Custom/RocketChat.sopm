@@ -3,7 +3,7 @@
     <Name>RocketChat</Name>
     <Version>6.0.0</Version>
     <Vendor>Ligero [Free]</Vendor>
-    <URL>http://www.complemento.net.br/</URL>
+    <URL>http://ligero.online/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
     <ChangeLog Date="2017-11-23 09:50:00" Version="0.8">First Release</ChangeLog>
     <Description Lang="en">This addon enables OTRS to integrate with Rocket.Chat. You can have a livechat on your 
@@ -23,6 +23,7 @@
         <File Location="var/packagesetup/RocketChat.pm" Permission="644"></File>
         <File Location="Kernel/System/Ticket/Event/NotificationEvent/Transport/RocketChat.pm" Permission="644"></File>
         <File Location="Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportRocketChat.tt" Permission="644"></File>
+        <File GoogleDrive="1Pzy81PsWYIGSUMkalhYFzyfMS3w6TFXPy94aiNsiykQ" Location="doc/pt_BR/RocketChatIntegration.pdf" Permission="644"></File>
     </Filelist>
     <CodeInstall Type="post">
         my $CodeModule = 'var::packagesetup::' . $Param{Structure}-&gt;{Name}-&gt;{Content};

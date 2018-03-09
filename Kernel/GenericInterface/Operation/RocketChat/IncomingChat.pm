@@ -193,12 +193,12 @@ sub Run {
     my $CustomerName = $Param{Data}->{visitor}->{name} || $Param{Data}->{visitor}->{username} || $LayoutObject->{LanguageObject}->Translate('Customer');
     
     for my $message (@Messages){
-        # Obs: the time of the message is always send in UTF
-        my $time = str2time($message->{ts});
+        # Obs: the time of the message is always send in UTC
+        my $time = int(str2time($message->{ts}));
         # the following field is set by javascript as a customfield on RocketChat. We need that to calculate
         # customer time of the message
         my $tz = $Param{Data}->{visitor}->{customFields}->{timezone} || 0; 
-        $time += ($tz*60);
+        $time += int($tz*60);
         my $dtLong = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
             SystemTime => $time,
             Type       => 'Long',
@@ -249,7 +249,12 @@ sub Run {
     );
     
     for my $TicketID(@Tickets){
-        my $ArticleID = $TicketObject->ArticleCreate(
+
+        my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+        my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Phone' );
+
+        
+        my $ArticleID = $ArticleBackendObject->ArticleCreate(
             #NoAgentNotify  => $Article->{NoAgentNotify}  || 0,
             TicketID       => $TicketID,
             ArticleType    => 'webrequest',
@@ -263,6 +268,7 @@ sub Run {
             UserID         => '1',
             HistoryType    => 'AddNote',
             HistoryComment => '%%ChatAdded%%',
+            IsVisibleForCustomer => 1
         );
     }
     
