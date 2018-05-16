@@ -18,9 +18,14 @@ Permite que notificações do OTRS sejam enviadas em canais ou para usuários do
 
 ![image alt text]({{ site.url }}/public/xHx8c4MiWrVf9ZHLWcQeaw_img_0.png)
 
-A **Complemento **realiza a implantação das melhores práticas ITIL para o Gerenciamento de Serviços de TI através do Software Livre. Contamos com o apoio de profissionais altamente qualificados e certificados para atender os mais variados perfis e necessidades de clientes.Com base na construção de bons relacionamentos e parcerias, o objetivo da Complemento é fazer parte das expectativas e do êxito das empresas que contam com ela.Partilhamos com nossos clientes as melhores práticas de GSTI, suportadas pelo software livre, guiando-os aos melhores resultados!
+A **Complemento **realiza a implantação das melhores práticas ITIL para o Gerenciamento de Serviços de TI através do Software Livre. Contamos com o apoio de profissionais altamente qualificados e certificados para atender os mais variados perfis e necessidades de clientes.
 
-Quer saber mais? Acesse **[www.complemento.net.b**r](http://www.complemento.net.br) ou entre em contato conosco pelo telefone **(+55) 11 2506-0180 **ou no e-mail **[contato@complemento.net.b**r](mailto:contato@complemento.net.br)**.**
+Com base na construção de bons relacionamentos e parcerias, o objetivo da Complemento é fazer parte das expectativas e do êxito das empresas que contam com ela.
+
+Partilhamos com nossos clientes as melhores práticas de GSTI, suportadas pelo software livre, guiando-os aos melhores resultados!
+
+
+Quer saber mais? Acesse **[www.complemento.net.b**r](http://www.complemento.net.br) ou entre em contato conosco pelo telefone **(+55) 11 2506-0180 **ou no e-mail **[contato@complemento.net.b**r](mailto:contato@complemento.net.br)**.**
 
 ![image alt text]({{ site.url }}/public/xHx8c4MiWrVf9ZHLWcQeaw_img_1.png)**          **![image alt text]({{ site.url }}/public/xHx8c4MiWrVf9ZHLWcQeaw_img_2.png)** **
 
