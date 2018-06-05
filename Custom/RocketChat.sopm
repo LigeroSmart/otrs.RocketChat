@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.1">
     <Name>RocketChat</Name>
-    <Version>6.0.0</Version>
-    <Vendor>Ligero [Free]</Vendor>
+    <Version>6.0.1</Version>
+    <Vendor>Ligero [Community]</Vendor>
     <URL>http://ligero.online/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
     <ChangeLog Date="2017-11-23 09:50:00" Version="0.8">First Release</ChangeLog>
