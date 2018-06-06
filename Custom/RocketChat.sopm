@@ -13,6 +13,15 @@
     site de sua empresa. Quando o chat é encerrado, o RocketChat irá criar um novo chamado em seu sistema ou adicionará um artigo em um chamado existente
     caso você coloque o número do chamado nas TAGs do Chat.</Description>
     <Framework>6.0.x</Framework>
+    <IntroInstall Lang="en" Title="Installation Information" Type="post">
+    AddOn Manuals:
+    &lt;br/&gt;
+    &lt;ul&gt;
+	    &lt;li&gt;
+			&lt;a target="_blank" href="https://docs.google.com/document/d/1Pzy81PsWYIGSUMkalhYFzyfMS3w6TFXPy94aiNsiykQ"&gt;Portuguese&lt;/a&gt;
+	    &lt;/li&gt;
+    &lt;/ul&gt;
+    </IntroInstall>  
     <Filelist>
         <File Location="Custom/RocketChat.sopm" Permission="644"></File>
         <File Location="Kernel/Config/Files/XML/RocketChat.xml" Permission="644"></File>
@@ -23,7 +32,6 @@
         <File Location="var/packagesetup/RocketChat.pm" Permission="644"></File>
         <File Location="Kernel/System/Ticket/Event/NotificationEvent/Transport/RocketChat.pm" Permission="644"></File>
         <File Location="Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportRocketChat.tt" Permission="644"></File>
-        <File GoogleDrive="1Pzy81PsWYIGSUMkalhYFzyfMS3w6TFXPy94aiNsiykQ" Location="doc/pt_BR/RocketChatIntegration.pdf" Permission="644"></File>
     </Filelist>
     <CodeInstall Type="post">
         my $CodeModule = 'var::packagesetup::' . $Param{Structure}-&gt;{Name}-&gt;{Content};
