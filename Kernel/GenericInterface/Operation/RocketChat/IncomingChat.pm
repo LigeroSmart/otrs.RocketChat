@@ -249,7 +249,9 @@ sub Run {
     );
     
     for my $TicketID(@Tickets){
-        my $ArticleID = $TicketObject->ArticleCreate(
+        my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+        my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Phone' );
+        my $ArticleID = $ArticleBackendObject->ArticleCreate(
             #NoAgentNotify  => $Article->{NoAgentNotify}  || 0,
             TicketID       => $TicketID,
             ArticleType    => 'webrequest',
