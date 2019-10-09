@@ -1,27 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.1">
     <Name>RocketChat</Name>
-    <Version>6.0.2</Version>
+    <Version>6.0.3</Version>
     <Vendor>Ligero [Community]</Vendor>
     <URL>http://ligero.online/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
     <ChangeLog Date="2017-11-23 09:50:00" Version="0.8">First Release</ChangeLog>
     <Description Lang="en">This addon enables OTRS to integrate with Rocket.Chat. You can have a livechat on your 
-    OTRS or any site of your company. When the chat is closed, RocketChat will create a new ticket on your system, or create a new article on an
-    existing ticket if you put the ticket number on the Chat TAGS</Description>
-    <Description Lang="pt_BR">Este AddOn realiza a integração do OTRS com o Rocket.Chat. Você pode ter um livechat no seu sistema OTRS ou em qualquer
-    site de sua empresa. Quando o chat é encerrado, o RocketChat irá criar um novo chamado em seu sistema ou adicionará um artigo em um chamado existente
-    caso você coloque o número do chamado nas TAGs do Chat.</Description>
+    OTRS or any site of your company.</Description>
+    <Description Lang="pt_BR">Este AddOn realiza a integração do OTRS com o Rocket.Chat.</Description>
     <Framework>6.0.x</Framework>
-    <IntroInstall Lang="en" Title="Installation Information" Type="post">
-    AddOn Manuals:
-    &lt;br/&gt;
-    &lt;ul&gt;
-	    &lt;li&gt;
-			&lt;a target="_blank" href="https://docs.google.com/document/d/1Pzy81PsWYIGSUMkalhYFzyfMS3w6TFXPy94aiNsiykQ"&gt;Portuguese&lt;/a&gt;
-	    &lt;/li&gt;
-    &lt;/ul&gt;
-    </IntroInstall>  
     <Filelist>
         <File Location="Custom/RocketChat.sopm" Permission="644"></File>
         <File Location="Kernel/Config/Files/XML/RocketChat.xml" Permission="644"></File>
