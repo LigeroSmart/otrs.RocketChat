@@ -1,0 +1,40 @@
+name: OPM Maker
+
+on: 
+  push:
+    branches: [ rel-6_0 ]
+    paths:
+    - "Custom/*.sopm"
+  pull_request:
+    branches: [ rel-6_0 ]
+    
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build OPM
+      run: docker run --rm -v ${{ github.workspace }}:/pkg -w /pkg ligero/otrs-itsm otrs.Console.pl Dev::Package::Build --allow-root --module-directory=/pkg Custom/*.sopm /pkg
+      
+
+    # Test
+    #- name: OPM tests
+    #  uses:
+    #  run: docker-compose --file scripts/test/docker-compose.test.yml
+
+    - name: Get version tag
+      id: get_version
+      run: echo ::set-output name=VERSION::$(grep '<Version>' Custom/*.sopm | sed -r 's/.+>(.+)<.+/\1/')
+      
+    - name: Upload OPM
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: ${{ steps.get_version.outputs.VERSION }}
+        files: |
+          *.opm
