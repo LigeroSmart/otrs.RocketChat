@@ -3,7 +3,7 @@
     <Name>RocketChat</Name>
     <Version>6.0.3</Version>
     <Vendor>Ligero [Community]</Vendor>
-    <URL>http://ligero.online/</URL>
+    <URL>http://ligerosmart.com/</URL>
     <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
     <ChangeLog Date="2017-11-23 09:50:00" Version="0.8">First Release</ChangeLog>
     <Description Lang="en">This addon enables OTRS to integrate with Rocket.Chat. You can have a livechat on your 
