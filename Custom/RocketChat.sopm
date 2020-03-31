@@ -8,7 +8,8 @@
     <ChangeLog Date="2017-11-23 09:50:00" Version="0.8">First Release</ChangeLog>
     <Description Lang="en">This addon enables OTRS to integrate with Rocket.Chat. You can have a livechat on your 
     OTRS or any site of your company.</Description>
-    <Description Lang="pt_BR">Este AddOn realiza a integração do OTRS com o Rocket.Chat.</Description>
+    <Description Lang="pt_BR">Este AddOn realiza a integração do OTRS com o Rocket.Chat. Você pode ter um chat ao vivo no seu
+     OTRS ou qualquer site da sua empresa</Description>
     <Framework>6.0.x</Framework>
     <Filelist>
         <File Location="Custom/RocketChat.sopm" Permission="644"></File>
