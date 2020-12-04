@@ -2,12 +2,16 @@ name: OPM Maker
 
 on: 
   push:
-    branches: [ rel-6_0 ]
     paths:
-    - "Custom/*.sopm"
-  pull_request:
-    branches: [ rel-6_0 ]
-    
+      - "Custom/*.sopm"
+      - ".github/workflows/*.yml"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+
 jobs:
 
   build:
@@ -28,12 +32,19 @@ jobs:
     - name: Get version tag
       id: get_version
       run: echo ::set-output name=VERSION::$(grep '<Version>' Custom/*.sopm | sed -r 's/.+>(.+)<.+/\1/')
+
+    - uses: rlespinasse/github-slug-action@1.1.1
+    - name: Print slug variables
+      run: |
+        echo ${{ env.GITHUB_REF_SLUG }}
+        echo ${{ env.GITHUB_HEAD_REF_SLUG }}
+        echo ${{ env.GITHUB_BASE_REF_SLUG }}
       
     - name: Upload OPM
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "latest"
+        automatic_release_tag: ${{ env.GITHUB_REF_SLUG }}
         prerelease: false
         title: ${{ steps.get_version.outputs.VERSION }}
         files: |
