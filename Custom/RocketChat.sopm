@@ -12,7 +12,6 @@
      OTRS ou qualquer site da sua empresa</Description>
     <Framework>6.0.x</Framework>
     <Filelist>
-        <File Location="Custom/RocketChat.sopm" Permission="644"></File>
         <File Location="Kernel/Config/Files/XML/RocketChat.xml" Permission="644"></File>
         <File Location="Kernel/GenericInterface/Operation/RocketChat/IncomingChat.pm" Permission="644"></File>
         <File Location="Kernel/Output/HTML/FilterElementPost/RocketChat.pm" Permission="644"></File>
