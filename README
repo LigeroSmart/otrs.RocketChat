@@ -1,0 +1,14 @@
+
+* Ligero - Rocket Chat Livechat Integration *
+
+1) Install this package on Ligero
+
+3) Enable Livechat on Rocket Chat ( refer to https://docs.rocket.chat/guides/omnichannel-guides/omnichannel )
+
+3) As a livechat manager, access Omnichannel -> Webhook and fill the form as below
+
+   *Webhook URL:* https://<LIGERO_ADDRESS>/otrs/nph-genericinterface.pl/Webservice/RocketChat/?UserLogin=<LIGERO_USER>&Password=<LIGERO_PASSWORD>
+   *Secret Token:* ( Leave empty )
+   *Send Request on:* [Chat Close], [Visitor Messages]
+
+4) Save
