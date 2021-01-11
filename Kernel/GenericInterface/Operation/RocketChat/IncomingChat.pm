@@ -235,7 +235,7 @@ sub Run {
             my $json;
 
             {
-                no warnings 'redundant';
+                no warnings;
                 $json='{
                     "token": "'.$Param{Data}->{visitor}->{token}.'", 
                     "rid": "'.$Param{Data}->{_id}.'", 
