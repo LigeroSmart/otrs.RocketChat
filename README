@@ -3,7 +3,7 @@
 
 1) Install this package on Ligero
 
-3) Enable Livechat on Rocket Chat ( refer to https://docs.rocket.chat/guides/omnichannel-guides/omnichannel )
+2) Enable Livechat on Rocket Chat ( refer to https://docs.rocket.chat/guides/omnichannel-guides/omnichannel )
 
 3) As a livechat manager, access Omnichannel -> Webhook and fill the form as below
 
