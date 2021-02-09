@@ -285,6 +285,10 @@ sub Run {
         };
 
     } elsif($Param{Data}->{type} eq 'LivechatSession'){
+
+        use LWP::UserAgent;
+        use MIME::Base64;
+
         # Se é encerramento do Chat
         # Verifica nas tags se houve algum número de chamado informado com "#"
         my @Tags = ();
@@ -327,6 +331,7 @@ sub Run {
         my $AgentName = $Param{Data}->{agent}->{name} || $Param{Data}->{agent}->{username} || $LayoutObject->{LanguageObject}->Translate('Agent');
         my $CustomerName = $Param{Data}->{visitor}->{name} || $Param{Data}->{visitor}->{username} || $LayoutObject->{LanguageObject}->Translate('Customer');
         
+        my @Attachments;	
         for my $message (@Messages){
             # Obs: the time of the message is always send in UTF
             my $time = str2time($message->{ts});
@@ -373,15 +378,50 @@ sub Run {
                     },
                 );
             }
-            
-            $Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
-                Name => 'Message',
-                Data => {
-                    Content => $Kernel::OM->Get('Kernel::System::HTMLUtils')->ToHTML(
-                        String => $message->{msg},
-                    )
-                },
-            );
+        
+            if (defined($message->{fileUpload})) {
+
+                my $ua = LWP::UserAgent->new;
+                # Disable Certificate verification
+                $ua->ssl_opts(verify_hostname => 0);
+               $ua->ssl_opts(SSL_verify_mode => 0x00);
+                my $resp = $ua->get( $message->{fileUpload}->{publicFilePath} );
+                if ($resp->is_success) {
+                    my $aObj = {
+                        #Content     => MIME::Base64::encode($resp->decoded_content( charset => 'none' ),''),
+                        Content     => $resp->content(),
+                        ContentType => $message->{file}->{type},
+                        Filename    => $message->{file}->{name}
+                    };
+                    push @Attachments, $aObj;
+                }
+
+                if ($message->{file}->{type} =~ m/image/ig) {
+                    $Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
+                        Name => 'Message',
+                        Data => {
+                            Content => "<img height='100' src='data:$message->{file}->{type};base64," . MIME::Base64::encode($resp->decoded_content( charset => 'none' ),'') . "' alt='$message->{file}->{name}'>"
+                        },
+                    );
+                } else {
+                    $Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
+                        Name => 'Message',
+                        Data => {
+                            Content => "<i>( $message->{file}->{name} )</i>"
+                        },
+                    );
+                }
+
+            } else {    
+                $Kernel::OM->Get('Kernel::Output::HTML::Layout')->Block(
+                    Name => 'Message',
+                    Data => {
+                        Content => $Kernel::OM->Get('Kernel::System::HTMLUtils')->ToHTML(
+                            String => $message->{msg},
+                        )
+                    },
+                );
+            }
 
         }
     
@@ -408,6 +448,7 @@ sub Run {
                 HistoryType    => 'AddNote',
                 HistoryComment => '%%ChatAdded%%',
                 IsVisibleForCustomer => 1,
+                Attachment     => \@Attachments
             );
         }
 
